@@ -24,6 +24,43 @@ class NumpadMenuState extends State<NumpadMenu> {
     super.initState();
   }
 
+  Widget buildClearButton(double scale) {
+    return SizedBox(
+      width: 40 * scale,
+      height: 40 * scale,
+      child: TextButton(
+        child: Text(
+          "<x",
+          style: getTitleTextStyle(scale),
+        ),
+        onPressed: () {
+          text = "";
+          widget.controller.text = text;
+          if (widget.onChange != null) {
+            widget.onChange!(text);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildEnterButton(double scale) {
+    return SizedBox(
+      width: 40 * scale,
+      height: 40 * scale,
+      child: TextButton(
+        child: Text(
+          "=>",
+          style: getTitleTextStyle(scale),
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+      ),
+    );
+  }
+
   Widget buildNrButton(int nr, double scale) {
     return SizedBox(
       width: 40 * scale,
@@ -106,7 +143,9 @@ class NumpadMenuState extends State<NumpadMenu> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      buildClearButton(scale),
                       buildNrButton(0, scale),
+                      buildEnterButton(scale),
                     ],
                   ),
                 ],
