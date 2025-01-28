@@ -497,7 +497,6 @@ class GameMethods {
       _gameState._toastMessage.value = "";
     }
 
-    List<String> monsters = [];
     List<SpecialRule> specialRules = [];
     List<RoomMonsterData> roomMonsterData = [];
     List<String> subSections = [];
@@ -511,7 +510,6 @@ class GameMethods {
           ?.sections
           .firstWhere((element) => element.name == scenario);
       if (sectionData != null) {
-        monsters = sectionData.monsters;
         specialRules = sectionData.specialRules.toList();
         initMessage = sectionData.initMessage;
         roomMonsterData = sectionData.monsterStandees != null
@@ -526,7 +524,6 @@ class GameMethods {
         var scenarioData = _gameData.modelData
             .value[_gameState.currentCampaign.value]?.scenarios[scenario];
         if (scenarioData != null) {
-          monsters = scenarioData.monsters;
           specialRules = scenarioData.specialRules.toList();
           if (initMessage.isNotEmpty && scenarioData.initMessage.isNotEmpty) {
             initMessage += "\n\n${scenarioData.initMessage}";
@@ -541,11 +538,6 @@ class GameMethods {
           }
         }
       }
-    }
-
-    //handle special rules
-    for (String monster in monsters) {
-      GameMethods.addMonster(s, monster, specialRules);
     }
 
     if (!section) {
