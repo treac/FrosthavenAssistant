@@ -27,7 +27,6 @@ class Settings {
   final darkMode = ValueNotifier<bool>(false);
   final noInit = ValueNotifier<bool>(false);
   final noStandees = ValueNotifier<bool>(false);
-  final randomStandees = ValueNotifier<bool>(false);
   final noCalculation = ValueNotifier<bool>(false);
   final expireConditions = ValueNotifier<bool>(false);
   final hideLootDeck = ValueNotifier<bool>(false);
@@ -220,9 +219,6 @@ class Settings {
       if (data["noStandees"] != null) {
         noStandees.value = data["noStandees"];
       }
-      if (data["randomStandees"] != null) {
-        randomStandees.value = data["randomStandees"];
-      }
       if (data["noCalculation"] != null) {
         noCalculation.value = data["noCalculation"];
       }
@@ -309,7 +305,6 @@ class Settings {
         '"softNumpadInput": ${softNumpadInput.value}, '
         '"noInit": ${noInit.value}, '
         '"noStandees": ${noStandees.value}, '
-        '"randomStandees": ${randomStandees.value}, '
         '"noCalculation": ${noCalculation.value}, '
         '"expireConditions": ${expireConditions.value}, '
         '"hideLootDeck": ${hideLootDeck.value}, '

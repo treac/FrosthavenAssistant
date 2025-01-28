@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frosthaven_assistant/Layout/menus/add_standee_menu.dart';
 import 'package:frosthaven_assistant/Model/monster.dart';
 import 'package:frosthaven_assistant/Resource/commands/activate_monster_type_command.dart';
 import 'package:frosthaven_assistant/Resource/scaling.dart';
@@ -41,10 +40,10 @@ class MonsterStatCardWidget extends StatelessWidget {
                   : MonsterType.elite,
           false);
     } else if (data.monsterInstances.length < data.type.count - 1) {
-      if (settings.randomStandees.value == true) {
+      if (true) {
         //todo: no logic in layout
-        int standeeNr = GameMethods.getRandomStandee(data);
-        if(getIt<GameState>().currentCampaign.value == "Buttons and Bugs") {
+        int standeeNr = GameMethods.getNextStandee(data);
+        if (getIt<GameState>().currentCampaign.value == "Buttons and Bugs") {
           standeeNr = GameMethods.getNextAvailableBnBStandee(data);
         }
         if (standeeNr != 0) {
@@ -59,14 +58,6 @@ class MonsterStatCardWidget extends StatelessWidget {
                       : MonsterType.elite,
               false));
         }
-      } else {
-        openDialog(
-          context,
-          AddStandeeMenu(
-            elite: !left,
-            monster: data,
-          ),
-        );
       }
     }
   }

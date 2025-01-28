@@ -144,15 +144,6 @@ class SettingsMenuState extends State<SettingsMenu> {
                                     });
                                   }),
                               CheckboxListTile(
-                                  title: const Text("Random Standees"),
-                                  value: settings.randomStandees.value,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      settings.randomStandees.value = value!;
-                                      settings.saveToDisk();
-                                    });
-                                  }),
-                              CheckboxListTile(
                                   title: const Text("No Calculations"),
                                   value: settings.noCalculation.value,
                                   onChanged: (bool? value) {

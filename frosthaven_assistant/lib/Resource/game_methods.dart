@@ -917,7 +917,7 @@ class GameMethods {
     return 0;
   }
 
-  static int getRandomStandee(Monster data) {
+  static int getNextStandee(Monster data) {
     int nrOfStandees = data.type.count;
     if (data.type.name == "Polar Bear") {
       nrOfStandees =
@@ -961,7 +961,7 @@ class GameMethods {
     if (available.isEmpty) {
       return 0;
     }
-    return available[Random().nextInt(available.length)];
+    return available.first;
   }
 
   static void executeAddStandee(
@@ -1123,7 +1123,7 @@ class GameMethods {
     bool addSorted = _gameState.currentCampaign.value == "Buttons and Bugs";
     if (getIt<Settings>().noStandees.value != true &&
         getIt<Settings>().autoAddStandees.value != false) {
-      if (getIt<Settings>().randomStandees.value == true || addSorted) {
+      if (true) {
         if (initMessage.isNotEmpty && !addSorted) {
           initMessage += "\n";
         }
@@ -1143,7 +1143,7 @@ class GameMethods {
           }
 
           for (int i = 0; i < eliteAmount; i++) {
-            int randomNr = GameMethods.getRandomStandee(data);
+            int randomNr = GameMethods.getNextStandee(data);
             if (randomNr != 0) {
               elites.add(randomNr);
               GameMethods.executeAddStandee(stateModifier, randomNr, null,
@@ -1152,7 +1152,7 @@ class GameMethods {
           }
 
           for (int i = 0; i < normalAmount; i++) {
-            int randomNr = GameMethods.getRandomStandee(data);
+            int randomNr = GameMethods.getNextStandee(data);
             if (addSorted) {
               randomNr = GameMethods.getNextAvailableBnBStandee(data);
             }
@@ -1203,17 +1203,6 @@ class GameMethods {
                 }
               }
             }
-          }
-        }
-      } else {
-        if (roomMonsterData.isNotEmpty) {
-          if (getIt.isRegistered<BuildContext>()) {
-            openDialogWithDismissOption(
-                getIt<BuildContext>(),
-                AutoAddStandeeMenu(
-                  monsterData: roomMonsterData,
-                ),
-                false);
           }
         }
       }
