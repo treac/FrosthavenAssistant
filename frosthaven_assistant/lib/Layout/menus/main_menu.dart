@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Layout/menus/add_character_menu.dart';
 import 'package:frosthaven_assistant/Layout/menus/add_section_menu.dart';
@@ -302,7 +303,7 @@ Drawer createMainMenu(BuildContext context) {
                   Navigator.pop(context);
                 },
               ),
-              Platform.isMacOS || Platform.isLinux || Platform.isWindows
+              !kIsWeb && (Platform.isMacOS || Platform.isLinux || Platform.isWindows)
                   ? ListTile(
                       title: const Text('Exit'),
                       enabled: true,

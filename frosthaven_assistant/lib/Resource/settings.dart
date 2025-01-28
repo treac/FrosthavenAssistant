@@ -19,7 +19,9 @@ enum Style { frosthaven, gloomhaven, original }
 class Settings {
   final userScalingMainList = ValueNotifier<double>(1.0);
   final userScalingBars = ValueNotifier<double>(
-      (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? 1.6 : 1.0);
+      (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS))
+          ? 1.6
+          : 1.0);
   final userScalingMenus = ValueNotifier<double>(1.0);
   final fullScreen = ValueNotifier<bool>(true);
   final darkMode = ValueNotifier<bool>(false);
@@ -30,7 +32,7 @@ class Settings {
   final expireConditions = ValueNotifier<bool>(false);
   final hideLootDeck = ValueNotifier<bool>(false);
   final shimmer = ValueNotifier<bool>(
-      (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+      (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS))
           ? true
           : false);
   final showScenarioNames = ValueNotifier<bool>(true);
@@ -96,7 +98,8 @@ class Settings {
   Future<void> setFullscreen(bool fullscreen) async {
     fullScreen.value = fullscreen;
     //to set fullscreen on pc - need to add exit button to quit //would be good to exit/enter mode with ctrl+enter
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!kIsWeb &&
+        (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       WidgetsFlutterBinding.ensureInitialized();
       windowManager.ensureInitialized();
 
