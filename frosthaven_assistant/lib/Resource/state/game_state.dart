@@ -2,7 +2,6 @@ library game_state;
 
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:collection/collection.dart';
@@ -10,11 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Resource/settings.dart';
 import 'package:frosthaven_assistant/Resource/stat_calculator.dart';
-import 'package:frosthaven_assistant/Resource/ui_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Layout/main_list.dart';
-import '../../Layout/menus/auto_add_standee_menu.dart';
 import '../../Model/MonsterAbility.dart';
 import '../../Model/character_class.dart';
 import '../../Model/monster.dart';

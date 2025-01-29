@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:frosthaven_assistant_server/connection_health.dart';
@@ -25,7 +24,7 @@ class StandaloneServer extends GameServer {
   String currentStateMessage(String commandDescription) {
     String state = "{}";
     if (_state.gameSaveStates.isNotEmpty){
-      state = _state.gameSaveStates.last!.getState();
+      state = _state.gameSaveStates.last.getState();
     }
     return "Index:${_state.commandIndex}Description:${commandDescription}GameState:$state";
   }
@@ -97,7 +96,7 @@ class StandaloneServer extends GameServer {
     print(
         'Server sends init response: "S3nD:Index:${_state.commandIndex}Description:$commandDescription');
     sendToOnly(
-        "Index:${_state.commandIndex}Description:${commandDescription}GameState:${_state.gameSaveStates.last!.getState()}",
+        "Index:${_state.commandIndex}Description:${commandDescription}GameState:${_state.gameSaveStates.last.getState()}",
         client);
   }
 
@@ -162,7 +161,7 @@ class StandaloneServer extends GameServer {
         commandDescription = _state.commandDescriptions.last;
       }
       send(
-          "Index:${_state.commandIndex}Description:${commandDescription}GameState:${_state.gameSaveStates.last!.getState()}");
+          "Index:${_state.commandIndex}Description:${commandDescription}GameState:${_state.gameSaveStates.last.getState()}");
     } else if (message.index > _state.commandIndex) {
       _state.commandIndex = message.index;
       if (message.index >= 0) {
@@ -171,7 +170,7 @@ class StandaloneServer extends GameServer {
       }
       _state.save(message.data);
       sendToOthers(
-          "Index:${_state.commandIndex}Description:${_state.commandDescriptions.last}GameState:${_state.gameSaveStates.last!.getState()}",
+          "Index:${_state.commandIndex}Description:${_state.commandDescriptions.last}GameState:${_state.gameSaveStates.last.getState()}",
           client);
     } else {
       print(
@@ -179,7 +178,7 @@ class StandaloneServer extends GameServer {
 
       //overwrite client state with current server state.
       sendToOnly(
-          "Mismatch:Index:${_state.commandIndex}Description:${_state.commandDescriptions[_state.commandIndex]}GameState:${_state.gameSaveStates.last!.getState()}",
+          "Mismatch:Index:${_state.commandIndex}Description:${_state.commandDescriptions[_state.commandIndex]}GameState:${_state.gameSaveStates.last.getState()}",
           client);
       //ignore if same index from server
     }
@@ -236,6 +235,7 @@ class StandaloneServer extends GameServer {
     }
   }
 
+  @override
   String safeGetClientAddress(Socket client){
     try{
       return "Client ${client.remoteAddress}:${client.remotePort}";
@@ -243,5 +243,5 @@ class StandaloneServer extends GameServer {
       return "Closed client: ";
     }
   }
-  
+
 }

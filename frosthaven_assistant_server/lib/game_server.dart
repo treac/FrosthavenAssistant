@@ -156,7 +156,7 @@ abstract class GameServer {
           // gracefully when the device is locked.
           if (error is SocketException &&
               (error.osError?.errorCode == 103 ||
-                  !leftOverMessage.isEmpty)) {
+                  leftOverMessage.isNotEmpty)) {
             stopServer(error.toString());
           }
         },
@@ -244,10 +244,10 @@ abstract class GameServer {
     } catch (exception) {
       log("Encountered error accessing client");
       log(exception.toString());
-      // There might be a chance that is is for a different 
-      // reason, but this is the most common reason I've 
+      // There might be a chance that is is for a different
+      // reason, but this is the most common reason I've
       // seen so far
-      return "Closed socket"; 
+      return "Closed socket";
     }
   }
 }
