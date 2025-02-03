@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Layout/menus/numpad_menu.dart';
 import 'package:frosthaven_assistant/Layout/menus/status_menu.dart';
 import 'package:frosthaven_assistant/Resource/commands/set_init_command.dart';
+import 'package:frosthaven_assistant/Resource/commands/change_stat_commands/change_xp_command.dart';
 import 'package:frosthaven_assistant/Resource/scaling.dart';
 import 'package:frosthaven_assistant/services/network/network.dart';
 
@@ -507,15 +508,27 @@ class CharacterWidgetState extends State<CharacterWidget> {
             ),
             isCharacter
                 ? Positioned(
-                    top: 10 * scale,
+                    top: 11 * scale,
                     left: 314 * scale,
                     child: Row(
                       children: [
-                        Image(
-                          height: 16 * scale,
-                          color: Colors.blue,
-                          colorBlendMode: BlendMode.modulate,
-                          image: const AssetImage("assets/images/psd/xp.png"),
+                        GestureDetector(
+                          onTap: () {
+                            _gameState.action(
+                                ChangeXPCommand(1, character.id, character.id));
+                          },
+                          onDoubleTap: () {
+                            if (character.characterState.xp.value > 0) {
+                              _gameState.action(ChangeXPCommand(
+                                  -1, character.id, character.id));
+                            }
+                          },
+                          child: Image(
+                            height: 16 * scale,
+                            color: Colors.blue,
+                            colorBlendMode: BlendMode.modulate,
+                            image: const AssetImage("assets/images/psd/xp.png"),
+                          ),
                         ),
                         ValueListenableBuilder<int>(
                             valueListenable: character.characterState.xp,
@@ -530,11 +543,12 @@ class CharacterWidgetState extends State<CharacterWidget> {
                               );
                             }),
                       ],
-                    ))
+                    ),
+                  )
                 : Container(),
             isCharacter
                 ? Positioned(
-                    top: 28 * scale,
+                    top: 29 * scale,
                     left: 316 * scale,
                     child: Row(
                       children: [

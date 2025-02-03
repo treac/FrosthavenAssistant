@@ -20,8 +20,8 @@ class ChangeXPCommand extends ChangeStatCommand {
   @override
   String describe() {
     if (change > 0) {
-      return "Increase $figureId's xp";
+      return "Increase $figureId's xp by $change";
     }
-    return "Decrease $figureId's xp";
+    return "Decrease $figureId's xp by ${change < 0 ? change * -1 : change}";
   }
 }
