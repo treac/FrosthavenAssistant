@@ -39,15 +39,21 @@ class AnimatedContainerButtonState extends State<ElementButton> {
   }
 
   void elementListener() {
-    final state = _gameState.elementState[widget.element];
-    if (state != null && mounted) {
-      setState(() {
-        if (state == ElementState.full) {
-          setFull();
-        } else if (state == ElementState.half) {
-          setHalf();
+    if (_gameState.elementState[widget.element] != null) {
+      ElementState state = _gameState.elementState[widget.element]!;
+      if (state == ElementState.full) {
+        if (mounted) {
+          setState(() {
+            setFull();
+          });
         }
-      });
+      } else if (state == ElementState.half) {
+        if (mounted) {
+          setState(() {
+            setHalf();
+          });
+        }
+      }
     }
   }
 
@@ -166,21 +172,29 @@ class AnimatedContainerButtonState extends State<ElementButton> {
                                 // Define how long the animation should take.
                                 duration: const Duration(milliseconds: 350),
                                 // Provide an optional curve to make the animation feel smoother.
-                                curve: Curves.decelerate);
+                                curve:
+                                    Curves.decelerate
+                                );
                           }),
                     )),
                 ValueListenableBuilder<int>(
                     valueListenable: _gameState.commandIndex,
                     builder: (context, value, child) {
+                      Color? color;
+                      if (getIt<Settings>().darkMode.value == false) {
+                        color = Colors.black;
+                      }
+                      if (ElementState.inert !=
+                          _gameState.elementState[widget.element]) {
+                        color = null;
+                      }
+
                       return Image(
                         height: widget.width *
                             settings.userScalingBars.value *
                             0.65,
                         image: AssetImage(widget.icon),
-                        color: _gameState.elementState[widget.element] !=
-                                ElementState.inert
-                            ? null
-                            : widget.color,
+                        color: color,
                         width: widget.width *
                             settings.userScalingBars.value *
                             0.65,
