@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:frosthaven_assistant/Layout/condition_icon.dart';
 import 'package:frosthaven_assistant/Layout/health_wheel_controller.dart';
+import 'package:frosthaven_assistant/Resource/commands/remove_condition_command.dart';
 import 'package:frosthaven_assistant/Resource/state/game_state.dart';
 import 'package:frosthaven_assistant/services/service_locator.dart';
 
@@ -50,12 +51,20 @@ class MonsterBox extends StatelessWidget {
     for (var condition in data.conditions.value) {
       for (var item in getIt<GameState>().currentList) {
         if (item.id == ownerId) {
-          list.add(ConditionIcon(
-            condition,
-            MonsterBox.conditionSize,
-            item,
-            data,
-            scale: scale,
+          list.add(GestureDetector(
+            onDoubleTap: () {
+              if (!blockInput) {
+                getIt<GameState>().action(
+                    RemoveConditionCommand(condition, figureId, ownerId));
+              }
+            },
+            child: ConditionIcon(
+              condition,
+              MonsterBox.conditionSize,
+              item,
+              data,
+              scale: scale,
+            ),
           ));
           break;
         }
@@ -118,7 +127,8 @@ class MonsterBox extends StatelessWidget {
 
     return ColorFiltered(
         //gray out if summoned this turn and it's still the character's/monster's turn
-        colorFilter: (data.roundSummoned == getIt<GameState>().round.value && ownerIsCurrent)
+        colorFilter: (data.roundSummoned == getIt<GameState>().round.value &&
+                ownerIsCurrent)
             ? ColorFilter.matrix(grayScale)
             : ColorFilter.matrix(identity),
         child: Container(
@@ -147,7 +157,8 @@ class MonsterBox extends StatelessWidget {
                 image: const AssetImage("assets/images/psd/monster-box.png"),
               ),
               Container(
-                margin: EdgeInsets.only(left: 3 * scale, top: 3 * scale, bottom: 2 * scale),
+                margin: EdgeInsets.only(
+                    left: 3 * scale, top: 3 * scale, bottom: 2 * scale),
                 child: Image(
                   height: 100 * scale,
                   width: 17 * scale,
@@ -163,13 +174,13 @@ class MonsterBox extends StatelessWidget {
                 child: Text(
                   textAlign: TextAlign.center,
                   standeeNr,
-                  style: TextStyle(color: color, fontSize: 20 * scale, shadows: [shadow]),
+                  style: TextStyle(
+                      color: color, fontSize: 20 * scale, shadows: [shadow]),
                 ),
               ),
               Positioned(
                 left: data.health.value > 99 ? 22 * scale : 23 * scale,
                 top: 0,
-
                 child: Container(
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.zero,
@@ -182,7 +193,9 @@ class MonsterBox extends StatelessWidget {
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 2 * scale),
-                          width: data.health.value > 99 ? 21 * scale : 16.8 * scale,
+                          width: data.health.value > 99
+                              ? 21 * scale
+                              : 16.8 * scale,
                           alignment: Alignment.center,
                           child: Text(
                             textAlign: TextAlign.end,
@@ -196,7 +209,8 @@ class MonsterBox extends StatelessWidget {
                         )
                       ]),
                       SizedBox(
-                        width: data.health.value > 99 ? 4.5 * scale : 6.5 * scale,
+                        width:
+                            data.health.value > 99 ? 4.5 * scale : 6.5 * scale,
                       ),
                       ValueListenableBuilder<List<Condition>>(
                           valueListenable: data.conditions,
@@ -217,8 +231,10 @@ class MonsterBox extends StatelessWidget {
               ),
               Container(
                   //the hp bar
-                  margin:
-                      EdgeInsets.only(bottom: 2.5 * scale, left: 2.5 * scale, right: 2.7 * scale),
+                  margin: EdgeInsets.only(
+                      bottom: 2.5 * scale,
+                      left: 2.5 * scale,
+                      right: 2.7 * scale),
                   alignment: Alignment.bottomCenter,
                   width: 42 * scale,
                   child: ValueListenableBuilder<int>(
@@ -255,16 +271,16 @@ class MonsterBox extends StatelessWidget {
     }
 
     if (getIt<GameState>().currentCampaign.value == "Buttons and Bugs") {
-      if(data.standeeNr == 1) {
+      if (data.standeeNr == 1) {
         color = Colors.green;
       }
-      if(data.standeeNr == 2) {
+      if (data.standeeNr == 2) {
         color = Colors.blue;
       }
-      if(data.standeeNr == 3) {
+      if (data.standeeNr == 3) {
         color = Colors.purple;
       }
-      if(data.standeeNr == 4) {
+      if (data.standeeNr == 4) {
         color = Colors.red;
       }
     }
@@ -276,58 +292,65 @@ class MonsterBox extends StatelessWidget {
     }
 
     return Material(
-    color: Colors.transparent,
-        child:InkWell(
-        onTap: () {
-          //open stats menu
-          if (!blockInput) {
-            openDialog(
-              context,
-              StatusMenu(figureId: figureId, monsterId: getMonster(), characterId: characterId),
-            );
-          }
-        },
-        child: HealthWheelController(
-          figureId: figureId,
-          ownerId: ownerId,
-          child: AnimatedContainer(
-              //makes it grow nicely when adding conditions
-              key: Key(figureId.toString()),
-              width: width,
-              curve: Curves.easeInOut,
-              duration: const Duration(milliseconds: 300),
-              child: ValueListenableBuilder<int>(
-                  valueListenable: data.health,
-                  builder: (context, value, child) {
-                    bool alive = true;
-                    if (data.health.value <= 0) {
-                      alive = false;
-                    }
+        color: Colors.transparent,
+        child: InkWell(
+            onTap: () {
+              //open stats menu
+              if (!blockInput) {
+                openDialog(
+                  context,
+                  StatusMenu(
+                      figureId: figureId,
+                      monsterId: getMonster(),
+                      characterId: characterId),
+                );
+              }
+            },
+            child: HealthWheelController(
+              figureId: figureId,
+              ownerId: ownerId,
+              child: AnimatedContainer(
+                  //makes it grow nicely when adding conditions
+                  key: Key(figureId.toString()),
+                  width: width,
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 300),
+                  child: ValueListenableBuilder<int>(
+                      valueListenable: data.health,
+                      builder: (context, value, child) {
+                        bool alive = true;
+                        if (data.health.value <= 0) {
+                          alive = false;
+                        }
 
-                    double offset = -30 * scale;
-                    Widget child = buildInternal(scale, width, color);
+                        double offset = -30 * scale;
+                        Widget child = buildInternal(scale, width, color);
 
-                    if (displayStartAnimation != figureId) {
-                      //if this one is not added - only play death animation
-                      return TranslationAnimatedWidget.tween(
-                          enabled: !alive && !blockInput,
-                          translationDisabled: const Offset(0, 0),
-                          translationEnabled: Offset(0, alive ? 0 : -offset),
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.linear,
-                          child: child);
-                    }
+                        if (displayStartAnimation != figureId) {
+                          //if this one is not added - only play death animation
+                          return TranslationAnimatedWidget.tween(
+                              enabled: !alive && !blockInput,
+                              translationDisabled: const Offset(0, 0),
+                              translationEnabled:
+                                  Offset(0, alive ? 0 : -offset),
+                              duration: const Duration(milliseconds: 600),
+                              curve: Curves.linear,
+                              child: child);
+                        }
 
-                    return TranslationAnimatedWidget.tween(
-                        enabled: true,
-                        //fix is to only set enabled on added/removed ones?
-                        translationDisabled: Offset(0, alive ? offset : 0),
-                        translationEnabled: Offset(0, alive ? 0 : -offset),
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.linear,
-                        child: OpacityAnimatedWidget.tween(
-                            enabled: alive, opacityDisabled: 0, opacityEnabled: 1, child: child));
-                  })),
-        )));
+                        return TranslationAnimatedWidget.tween(
+                            enabled: true,
+                            //fix is to only set enabled on added/removed ones?
+                            translationDisabled: Offset(0, alive ? offset : 0),
+                            translationEnabled: Offset(0, alive ? 0 : -offset),
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.linear,
+                            child: OpacityAnimatedWidget.tween(
+                                enabled: alive,
+                                opacityDisabled: 0,
+                                opacityEnabled: 1,
+                                child: child));
+                      })),
+            )));
   }
 }
