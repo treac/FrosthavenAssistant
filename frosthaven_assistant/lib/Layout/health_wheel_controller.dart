@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Layout/select_health_wheel.dart';
+import 'package:frosthaven_assistant/Resource/commands/change_stat_commands/change_health_command.dart';
 import 'package:frosthaven_assistant/Resource/scaling.dart';
 
 import '../Resource/state/game_state.dart';
@@ -85,8 +86,22 @@ class HealthWheelControllerState extends State<HealthWheelController> {
   Widget build(BuildContext context) {
     double scale = getScaleByReference(context);
     int? lastTimeStamp;
+    FigureState? figure =
+        GameMethods.getFigure(widget.ownerId, widget.figureId);
 
     return GestureDetector(
+        onTap: () {
+          if (figure != null && figure.health.value < figure.maxHealth.value) {
+            getIt<GameState>().action(
+                ChangeHealthCommand(1, widget.figureId, widget.ownerId));
+          }
+        },
+        onDoubleTap: () {
+          if (figure != null && figure.health.value > 0) {
+            getIt<GameState>().action(
+                ChangeHealthCommand(-1, widget.figureId, widget.ownerId));
+          }
+        },
         onHorizontalDragStart: (details) {
           hideOverlay();
           final overlay = Overlay.of(context);

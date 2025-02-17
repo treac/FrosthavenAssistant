@@ -100,8 +100,10 @@ class CharacterWidgetState extends State<CharacterWidget> {
     for (int i = 0; i < character.characterState.conditions.value.length; i++) {
       conditions.add(GestureDetector(
         onDoubleTap: () {
-          getIt<GameState>().action(
-              RemoveConditionCommand(character.characterState.conditions.value[i], character.id, character.id));
+          getIt<GameState>().action(RemoveConditionCommand(
+              character.characterState.conditions.value[i],
+              character.id,
+              character.id));
         },
         child: ConditionIcon(
           character.characterState.conditions.value[i],
@@ -345,20 +347,6 @@ class CharacterWidgetState extends State<CharacterWidget> {
           1
         ]*/
         );
-  }
-
-  Widget buildWithHealthWheel() {
-    return HealthWheelController(
-        figureId: widget.characterId,
-        ownerId: widget.characterId,
-        child: PhysicalShape(
-            color: character.turnState == TurnsState.current
-                ? Colors.tealAccent
-                : Colors.transparent,
-            shadowColor: Colors.black,
-            elevation: 8,
-            clipper: const ShapeBorderClipper(shape: RoundedRectangleBorder()),
-            child: buildInternal(context)));
   }
 
   Widget buildInternal(BuildContext context) {
@@ -696,7 +684,15 @@ class CharacterWidgetState extends State<CharacterWidget> {
                     child: _gameState.roundState.value ==
                             RoundState.chooseInitiative
                         ? buildInternal(context)
-                        : buildWithHealthWheel())
+                        : PhysicalShape(
+                            color: character.turnState == TurnsState.current
+                                ? Colors.tealAccent
+                                : Colors.transparent,
+                            shadowColor: Colors.black,
+                            elevation: 8,
+                            clipper: const ShapeBorderClipper(
+                                shape: RoundedRectangleBorder()),
+                            child: buildInternal(context)))
               ]);
             }));
   }

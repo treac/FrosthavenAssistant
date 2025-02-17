@@ -185,29 +185,33 @@ class MonsterBox extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.zero,
                     child: Row(children: [
-                      Column(children: [
-                        Image(
-                          color: Colors.red,
-                          height: 7 * scale,
-                          image: const AssetImage("assets/images/blood.png"),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 2 * scale),
-                          width: data.health.value > 99
-                              ? 21 * scale
-                              : 16.8 * scale,
-                          alignment: Alignment.center,
-                          child: Text(
-                            textAlign: TextAlign.end,
-                            "${data.health.value}",
-                            style: TextStyle(
-                                height: 1,
-                                color: Colors.white,
-                                fontSize: 16 * scale,
-                                shadows: [shadow]),
-                          ),
-                        )
-                      ]),
+                      HealthWheelController(
+                          figureId: figureId,
+                          ownerId: ownerId,
+                          child: Column(children: [
+                            Image(
+                              color: Colors.red,
+                              height: 7 * scale,
+                              image:
+                                  const AssetImage("assets/images/blood.png"),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 2 * scale),
+                              width: data.health.value > 99
+                                  ? 21 * scale
+                                  : 16.8 * scale,
+                              alignment: Alignment.center,
+                              child: Text(
+                                textAlign: TextAlign.end,
+                                "${data.health.value}",
+                                style: TextStyle(
+                                    height: 1,
+                                    color: Colors.white,
+                                    fontSize: 16 * scale,
+                                    shadows: [shadow]),
+                              ),
+                            )
+                          ])),
                       SizedBox(
                         width:
                             data.health.value > 99 ? 4.5 * scale : 6.5 * scale,
@@ -306,51 +310,47 @@ class MonsterBox extends StatelessWidget {
                 );
               }
             },
-            child: HealthWheelController(
-              figureId: figureId,
-              ownerId: ownerId,
-              child: AnimatedContainer(
-                  //makes it grow nicely when adding conditions
-                  key: Key(figureId.toString()),
-                  width: width,
-                  curve: Curves.easeInOut,
-                  duration: const Duration(milliseconds: 300),
-                  child: ValueListenableBuilder<int>(
-                      valueListenable: data.health,
-                      builder: (context, value, child) {
-                        bool alive = true;
-                        if (data.health.value <= 0) {
-                          alive = false;
-                        }
+            child: AnimatedContainer(
+              //makes it grow nicely when adding conditions
+              key: Key(figureId.toString()),
+              width: width,
+              curve: Curves.easeInOut,
+              duration: const Duration(milliseconds: 300),
+              child: ValueListenableBuilder<int>(
+                  valueListenable: data.health,
+                  builder: (context, value, child) {
+                    bool alive = true;
+                    if (data.health.value <= 0) {
+                      alive = false;
+                    }
 
-                        double offset = -30 * scale;
-                        Widget child = buildInternal(scale, width, color);
+                    double offset = -30 * scale;
+                    Widget child = buildInternal(scale, width, color);
 
-                        if (displayStartAnimation != figureId) {
-                          //if this one is not added - only play death animation
-                          return TranslationAnimatedWidget.tween(
-                              enabled: !alive && !blockInput,
-                              translationDisabled: const Offset(0, 0),
-                              translationEnabled:
-                                  Offset(0, alive ? 0 : -offset),
-                              duration: const Duration(milliseconds: 600),
-                              curve: Curves.linear,
-                              child: child);
-                        }
+                    if (displayStartAnimation != figureId) {
+                      //if this one is not added - only play death animation
+                      return TranslationAnimatedWidget.tween(
+                          enabled: !alive && !blockInput,
+                          translationDisabled: const Offset(0, 0),
+                          translationEnabled: Offset(0, alive ? 0 : -offset),
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.linear,
+                          child: child);
+                    }
 
-                        return TranslationAnimatedWidget.tween(
-                            enabled: true,
-                            //fix is to only set enabled on added/removed ones?
-                            translationDisabled: Offset(0, alive ? offset : 0),
-                            translationEnabled: Offset(0, alive ? 0 : -offset),
-                            duration: const Duration(milliseconds: 600),
-                            curve: Curves.linear,
-                            child: OpacityAnimatedWidget.tween(
-                                enabled: alive,
-                                opacityDisabled: 0,
-                                opacityEnabled: 1,
-                                child: child));
-                      })),
+                    return TranslationAnimatedWidget.tween(
+                        enabled: true,
+                        //fix is to only set enabled on added/removed ones?
+                        translationDisabled: Offset(0, alive ? offset : 0),
+                        translationEnabled: Offset(0, alive ? 0 : -offset),
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.linear,
+                        child: OpacityAnimatedWidget.tween(
+                            enabled: alive,
+                            opacityDisabled: 0,
+                            opacityEnabled: 1,
+                            child: child));
+                  }),
             )));
   }
 }
