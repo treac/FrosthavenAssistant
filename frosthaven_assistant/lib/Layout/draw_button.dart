@@ -19,22 +19,16 @@ class DrawButton extends StatefulWidget {
 
 class DrawButtonState extends State<DrawButton> {
   final GameState _gameState = getIt<GameState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final Settings _settings = getIt<Settings>();
 
   void onPressed() {
     if (_gameState.roundState.value == RoundState.chooseInitiative) {
       if (GameMethods.canDraw()) {
         _gameState.action(DrawCommand());
       } else {
-        String text =
-            "Player Initiative numbers must be set (under the initiative marker to the right of the character symbol)";
-        if (_gameState.currentList.isEmpty) {
-          text = "Add characters first.";
-        }
+        String text = _gameState.currentList.isEmpty
+            ? "Add characters first."
+            : "Player Initiative numbers must be set (under the initiative marker to the right of the character symbol)";
         showToast(context, text);
       }
     } else {
@@ -44,68 +38,87 @@ class DrawButtonState extends State<DrawButton> {
 
   @override
   Widget build(BuildContext context) {
-    //TextButton says Draw/Next Round
-    //has a turn counter
-    //and a timer
-    //2 states
-    Settings settings = getIt<Settings>();
-    return ValueListenableBuilder<double>(
-        valueListenable: settings.userScalingBars,
-        builder: (context, value, child) {
-          var shadow = Shadow(
-            offset: Offset(1 * settings.userScalingBars.value, 1 * settings.userScalingBars.value),
-            color: Colors.black87,
-            blurRadius: 1 * settings.userScalingBars.value,
-          );
+    return ValueListenableBuilder<bool>(
+      valueListenable: _settings.darkMode,
+      builder: (context, isDark, child) => _buildButton(isDark),
+    );
+  }
 
-          return Stack(alignment: Alignment.centerLeft, children: [
-            ValueListenableBuilder<int>(
-              valueListenable: _gameState.round,
-              builder: (context, value, child) {
-                String text = _gameState.round.value.toString();
-                if (_gameState.totalRounds.value != _gameState.round.value) {
-                  text = "${"$text(${_gameState.totalRounds.value}"})";
-                }
-                return Positioned(
-                    bottom: 2 * settings.userScalingBars.value,
-                    left: 45 * settings.userScalingBars.value,
-                    child: Text(text,
-                        style: TextStyle(
-                          fontSize: 14 * settings.userScalingBars.value,
-                          color: Colors.white,
-                          shadows: [shadow],
-                        )));
-              },
+  Widget _buildButton(bool isDark) {
+    var shadow = Shadow(
+      offset: Offset(
+          _settings.userScalingBars.value, _settings.userScalingBars.value),
+      color: Colors.black87,
+      blurRadius: _settings.userScalingBars.value,
+    );
+
+    return ValueListenableBuilder<double>(
+      valueListenable: _settings.userScalingBars,
+      builder: (context, scale, _) => Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          _buildRoundCounter(isDark, shadow),
+          _buildActionButton(isDark, shadow),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoundCounter(bool isDark, Shadow shadow) {
+    return ValueListenableBuilder<int>(
+      valueListenable: _gameState.round,
+      builder: (context, value, _) {
+        String text = _gameState.round.value.toString();
+        if (_gameState.totalRounds.value != _gameState.round.value) {
+          text = "$text(${_gameState.totalRounds.value})";
+        }
+
+        return Positioned(
+          bottom: 2 * _settings.userScalingBars.value,
+          left: 45 * _settings.userScalingBars.value,
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 14 * _settings.userScalingBars.value,
+              color: isDark ? Colors.white : Colors.black,
+              shadows: [shadow],
             ),
-            ValueListenableBuilder<int>(
-              valueListenable: _gameState.commandIndex,
-              builder: (context, value, child) {
-                return Container(
-                    margin: EdgeInsets.zero,
-                    height: 40 * settings.userScalingBars.value,
-                    width: (_gameState.totalRounds.value != _gameState.round.value ? 75 : 60) *
-                        settings.userScalingBars.value,
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                            padding: EdgeInsets.only(
-                                left: 10 * settings.userScalingBars.value,
-                                right: 10 * settings.userScalingBars.value),
-                            alignment: Alignment.center),
-                        onPressed: onPressed,
-                        child: Text(
-                          _gameState.roundState.value == RoundState.chooseInitiative
-                              ? "Draw"
-                              : " Next Round",
-                          style: TextStyle(
-                            height: 0.8,
-                            fontSize: 16 * settings.userScalingBars.value,
-                            color: Colors.white,
-                            shadows: [shadow],
-                          ),
-                        )));
-              },
-            )
-          ]);
-        });
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildActionButton(bool isDark, Shadow shadow) {
+    return ValueListenableBuilder<int>(
+      valueListenable: _gameState.commandIndex,
+      builder: (context, _, __) => Container(
+        margin: EdgeInsets.zero,
+        height: 40 * _settings.userScalingBars.value,
+        width:
+            (_gameState.totalRounds.value != _gameState.round.value ? 75 : 60) *
+                _settings.userScalingBars.value,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10 * _settings.userScalingBars.value,
+            ),
+            alignment: Alignment.center,
+          ),
+          onPressed: onPressed,
+          child: Text(
+            _gameState.roundState.value == RoundState.chooseInitiative
+                ? "Draw"
+                : "Next Round",
+            style: TextStyle(
+              height: 0.8,
+              fontSize: 16 * _settings.userScalingBars.value,
+              color: isDark ? Colors.white : Colors.black,
+              shadows: [shadow],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
