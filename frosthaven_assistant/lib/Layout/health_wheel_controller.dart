@@ -10,12 +10,9 @@ extension GlobalPaintBounds on BuildContext {
   Rect? get globalPaintBounds {
     final renderObject = findRenderObject();
     final translation = renderObject?.getTransformTo(null).getTranslation();
-    if (translation != null && renderObject?.paintBounds != null) {
-      final offset = Offset(translation.x, translation.y);
-      return renderObject!.paintBounds.shift(offset);
-    } else {
-      return null;
-    }
+    return translation != null && renderObject?.paintBounds != null
+        ? renderObject!.paintBounds.shift(Offset(translation.x, translation.y))
+        : null;
   }
 }
 
@@ -39,6 +36,8 @@ class HealthWheelControllerState extends State<HealthWheelController> {
 
   final wheelDelta = ValueNotifier<double>(0);
   final wheelTimeDelta = ValueNotifier<int>(0);
+  final gameState = getIt<GameState>();
+  int? lastTimeStamp;
 
   @override
   void initState() {
@@ -47,86 +46,74 @@ class HealthWheelControllerState extends State<HealthWheelController> {
 
   @override
   void dispose() {
-    super.dispose();
     hideOverlay();
+    super.dispose();
   }
 
   void hideOverlay() {
-    if (entry != null && entry!.mounted) {
+    if (entry?.mounted ?? false) {
       entry!.remove();
       entry!.dispose();
       entry = null;
-      getIt<GameState>().updateList.value++;
+      gameState.updateList.value++;
     }
   }
 
   void showOverlay(String figureId, double scale, BuildContext context) {
-    double dx = context.globalPaintBounds!.topCenter.dx - 100 * scale;
-    double dy = context.globalPaintBounds!.topCenter.dy - 40 * scale;
-    var selectHealthWheel = SelectHealthWheel(
-        key: UniqueKey(),
-        data: GameMethods.getFigure(widget.ownerId, widget.figureId)!,
-        figureId: figureId,
-        ownerId: widget.ownerId,
-        delta: wheelDelta,
-        time: wheelTimeDelta);
+    final bounds = context.globalPaintBounds!;
     entry = OverlayEntry(
-        builder: (context) => Positioned(
-            left: dx,
-            top: dy,
-            width: 200 * scale,
-            height: 50 * scale,
-            child:
-                Material(color: Colors.transparent, child: selectHealthWheel)));
-    final overlay = Overlay.of(context);
-    overlay.insert(entry!);
+      builder: (_) => Positioned(
+        left: bounds.topCenter.dx - 100 * scale,
+        top: bounds.topCenter.dy - 40 * scale,
+        width: 200 * scale,
+        height: 50 * scale,
+        child: Material(
+          color: Colors.transparent,
+          child: SelectHealthWheel(
+            key: UniqueKey(),
+            data: GameMethods.getFigure(widget.ownerId, widget.figureId)!,
+            figureId: figureId,
+            ownerId: widget.ownerId,
+            delta: wheelDelta,
+            time: wheelTimeDelta,
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(entry!);
+  }
+
+  void _handleHealthChange(int amount) {
+    final figure = GameMethods.getFigure(widget.ownerId, widget.figureId);
+    if (figure != null) {
+      if ((amount > 0 && figure.health.value < figure.maxHealth.value) ||
+          (amount < 0 && figure.health.value > 0)) {
+        gameState.action(ChangeHealthCommand(amount, widget.figureId, widget.ownerId));
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double scale = getScaleByReference(context);
-    int? lastTimeStamp;
-    FigureState? figure =
-        GameMethods.getFigure(widget.ownerId, widget.figureId);
-
+    final scale = getScaleByReference(context);
     return GestureDetector(
-        onTap: () {
-          if (figure != null && figure.health.value < figure.maxHealth.value) {
-            getIt<GameState>().action(
-                ChangeHealthCommand(1, widget.figureId, widget.ownerId));
-          }
-        },
-        onDoubleTap: () {
-          if (figure != null && figure.health.value > 0) {
-            getIt<GameState>().action(
-                ChangeHealthCommand(-1, widget.figureId, widget.ownerId));
-          }
-        },
-        onHorizontalDragStart: (details) {
-          hideOverlay();
-          final overlay = Overlay.of(context);
-          overlay
-              .deactivate(); //this removes prior popup if it ended up hanging around for some reason
-          showOverlay(widget.figureId, scale, context);
-        },
-        onHorizontalDragCancel: () {
-          hideOverlay();
-        },
-        onHorizontalDragUpdate: (DragUpdateDetails details) {
-          int timeDiff = 0;
-          if (lastTimeStamp != null) {
-            timeDiff = details.sourceTimeStamp!.inMicroseconds - lastTimeStamp!;
-          }
-
-          wheelTimeDelta.value = timeDiff;
-          wheelDelta.value = details.delta.dx;
-
-          lastTimeStamp = details.sourceTimeStamp!.inMicroseconds;
-        },
-        onHorizontalDragEnd: (details) {
-          //close scrollview and run changeHeath command
-          hideOverlay();
-        },
-        child: widget.child);
+      onTap: () => _handleHealthChange(1),
+      onDoubleTap: () => _handleHealthChange(-1),
+      onHorizontalDragStart: (details) {
+        hideOverlay();
+        Overlay.of(context).deactivate();
+        showOverlay(widget.figureId, scale, context);
+      },
+      onHorizontalDragCancel: hideOverlay,
+      onHorizontalDragUpdate: (details) {
+        wheelTimeDelta.value = lastTimeStamp != null
+            ? details.sourceTimeStamp!.inMicroseconds - lastTimeStamp!
+            : 0;
+        wheelDelta.value = details.delta.dx;
+        lastTimeStamp = details.sourceTimeStamp!.inMicroseconds;
+      },
+      onHorizontalDragEnd: (_) => hideOverlay(),
+      child: widget.child,
+    );
   }
 }

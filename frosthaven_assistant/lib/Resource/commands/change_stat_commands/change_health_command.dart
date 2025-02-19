@@ -1,3 +1,4 @@
+import 'dart:math';
 import '../../../services/service_locator.dart';
 import '../../state/game_state.dart';
 import 'change_stat_command.dart';
@@ -14,7 +15,8 @@ class ChangeHealthCommand extends ChangeStatCommand {
       //no negative values
       figure.setHealth(stateAccess, 0);
     } else {
-      figure.setHealth(stateAccess, figure.health.value + change);
+      figure.setHealth(stateAccess,
+          min(figure.health.value + change, figure.maxHealth.value));
     }
     if (previousValue <= 0 && figure.health.value > 0) {
       //un death
