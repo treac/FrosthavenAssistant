@@ -5,11 +5,11 @@ import 'change_stat_command.dart';
 
 class ChangeHealthCommand extends ChangeStatCommand {
   ChangeHealthCommand(super.change, super.figureId, super.ownerId);
+  ChangeHealthCommand.withFigure(super.change, super.figure)
+      : super.withFigure();
 
   @override
   void execute() {
-    FigureState figure = GameMethods.getFigure(ownerId, figureId)!;
-
     int previousValue = figure.health.value;
     if (figure.health.value + change < 0) {
       //no negative values
