@@ -101,7 +101,8 @@ class NumpadMenuState extends State<NumpadMenu> {
         height: 180 * scale,
         decoration: BoxDecoration(
           image: DecorationImage(
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+            colorFilter: ColorFilter.mode(
+                Colors.black.withValues(alpha: 0.8), BlendMode.dstATop),
             image: AssetImage(getIt<Settings>().darkMode.value
                 ? 'assets/images/bg/dark_bg.png'
                 : 'assets/images/bg/white_bg.png'),
@@ -110,46 +111,46 @@ class NumpadMenuState extends State<NumpadMenu> {
         ),
         child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20 * scale,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 20 * scale,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildNrButton(1, scale),
-                      buildNrButton(2, scale),
-                      buildNrButton(3, scale),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildNrButton(4, scale),
-                      buildNrButton(5, scale),
-                      buildNrButton(6, scale),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildNrButton(7, scale),
-                      buildNrButton(8, scale),
-                      buildNrButton(9, scale),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildClearButton(scale),
-                      buildNrButton(0, scale),
-                      buildEnterButton(scale),
-                    ],
-                  ),
+                  buildNrButton(1, scale),
+                  buildNrButton(2, scale),
+                  buildNrButton(3, scale),
                 ],
               ),
-            ]));
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildNrButton(4, scale),
+                  buildNrButton(5, scale),
+                  buildNrButton(6, scale),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildNrButton(7, scale),
+                  buildNrButton(8, scale),
+                  buildNrButton(9, scale),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildClearButton(scale),
+                  buildNrButton(0, scale),
+                  buildEnterButton(scale),
+                ],
+              ),
+            ],
+          ),
+        ]));
   }
 }

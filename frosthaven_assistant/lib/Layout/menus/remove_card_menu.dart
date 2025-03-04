@@ -50,7 +50,7 @@ class RemoveCardMenuState extends State<RemoveCardMenu> {
         decoration: BoxDecoration(
           image: DecorationImage(
             colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                Colors.black.withValues(alpha: 0.8), BlendMode.dstATop),
             image: AssetImage(getIt<Settings>().darkMode.value
                 ? 'assets/images/bg/dark_bg.png'
                 : 'assets/images/bg/white_bg.png'),

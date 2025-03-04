@@ -359,7 +359,8 @@ class AddStandeeMenuState extends State<AutoAddStandeeMenu> {
               height: height * scale,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                  colorFilter: ColorFilter.mode(
+                      Colors.black.withValues(alpha: 0.8), BlendMode.dstATop),
                   image: AssetImage(getIt<Settings>().darkMode.value
                       ? 'assets/images/bg/dark_bg.png'
                       : 'assets/images/bg/white_bg.png'),
@@ -380,21 +381,21 @@ class AddStandeeMenuState extends State<AutoAddStandeeMenu> {
                                 nrOfNormal - currentNormalAdded, nrOfElite, nrOfNormal),
                           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                             Text("Summoned:", style: getSmallTextStyle(scale)),
-                            Checkbox(
-                              checkColor: Colors.black,
-                              activeColor: Colors.grey.shade200,
-                              side: BorderSide(
-                                  color: getIt<Settings>().darkMode.value
-                                      ? Colors.white
-                                      : Colors.black),
-                              onChanged: (bool? newValue) {
-                                setState(() {
-                                  addAsSummon = newValue!;
-                                });
-                              },
-                              value: addAsSummon,
-                            )
-                          ])
+                                Checkbox(
+                                  checkColor: Colors.black,
+                                  activeColor: Colors.grey.shade200,
+                                  side: BorderSide(
+                                      color: getIt<Settings>().darkMode.value
+                                          ? Colors.white
+                                          : Colors.black),
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      addAsSummon = newValue!;
+                                    });
+                                  },
+                                  value: addAsSummon,
+                                )
+                              ])
                         ],
                       ),
                       Positioned(

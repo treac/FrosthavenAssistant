@@ -421,7 +421,7 @@ class CharacterWidgetState extends State<CharacterWidget> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.6),
+                          color: Colors.black.withValues(alpha: 0.6),
                           spreadRadius: 4,
                           blurRadius: 13.0 * scale,
                         ),
