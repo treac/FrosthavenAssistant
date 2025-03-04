@@ -65,6 +65,8 @@ class CharacterState extends FigureState {
         _conditionsAddedPreviousTurn.add(Condition.values[item]);
       }
     }
+    _conditionsHealthChangedThisTurn =
+        json["conditionsHealthChangedThisTurn"];
     _conditionsHealthChangedPreviousTurn =
         json["conditionsHealthChangedPreviousTurn"];
   }

@@ -107,7 +107,8 @@ class MonsterInstance extends FigureState {
         '"conditions": ${conditions.value.toString()}, '
         '"conditionsAddedThisTurn": ${_conditionsAddedThisTurn.toList().toString()}, '
         '"conditionsAddedPreviousTurn": ${_conditionsAddedPreviousTurn.toList().toString()}, '
-        '"conditionsHealthChangedPreviousTurn": $_conditionsHealthChangedPreviousTurn, '
+        '"conditionsHealthChangedThisTurn": $_conditionsHealthChangedPreviousTurn, '
+        '"conditionsHealthChangedPreviousTurn": $_conditionsHealthChangedPreviousTurn '
         '}';
   }
 
@@ -142,6 +143,8 @@ class MonsterInstance extends FigureState {
         _conditionsAddedPreviousTurn.add(Condition.values[item]);
       }
     }
+    _conditionsHealthChangedThisTurn =
+        json["conditionsHealthChangedThisTurn"];
     _conditionsHealthChangedPreviousTurn =
         json["conditionsHealthChangedPreviousTurn"];
   }

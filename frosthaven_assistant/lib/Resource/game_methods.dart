@@ -1417,6 +1417,8 @@ class GameMethods {
       figure._conditionsHealthChangedPreviousTurn = 0;
       figure._conditionsAddedPreviousTurn
           .addAll(figure.conditionsAddedThisTurn.toSet());
+      figure._conditionsHealthChangedPreviousTurn =
+          figure._conditionsHealthChangedThisTurn;
     } else {
       figure._conditionsAddedPreviousTurn.clear();
       figure._conditionsHealthChangedPreviousTurn = 0;
@@ -1591,6 +1593,55 @@ class GameMethods {
             reapplyConditionsFromListItem(s, data);
           }
           data._turnState = TurnsState.current;
+
+          // // // on turn start
+          // int healthChanged = 0;
+          // if (data.characterState.conditions.value
+          //     .contains(Condition.regenerate)) {
+          //   healthChanged = 1;
+          //   if (data.characterState.conditions.value.remove(Condition.poison)) {
+          //     healthChanged = 0;
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.poison);
+          //   }
+          //   if (data.characterState.conditions.value.remove(Condition.wound)) {
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.wound);
+          //   }
+          //   if (data.characterState.conditions.value
+          //       .remove(Condition.brittle)) {
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.brittle);
+          //   }
+          //   if (data.characterState.conditions.value.remove(Condition.bane)) {
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.bane);
+          //   }
+          // }
+          // if (data.characterState.conditions.value.contains(Condition.wound)) {
+          //   healthChanged -= 1;
+          //   if (data.characterState.conditions.value
+          //       .remove(Condition.brittle)) {
+          //     healthChanged -= 1;
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.brittle);
+          //   }
+          //   if (data.characterState.conditions.value.remove(Condition.ward)) {
+          //     healthChanged += 1;
+          //     data.characterState._conditionsAddedPreviousTurn
+          //         .add(Condition.ward);
+          //   }
+          // }
+          // if (healthChanged + data.characterState._health.value >=
+          //     data.characterState.maxHealth.value) {
+          //   healthChanged = data.characterState.maxHealth.value -
+          //       data.characterState._health.value;
+          // }
+          // data.characterState._health.value += healthChanged;
+          // data.characterState._conditionsHealthChangedThisTurn += healthChanged;
+          // if (data.characterState._health.value <= 0) {
+          //   handleDeath(s);
+          // }
           break;
         }
       }
