@@ -495,20 +495,18 @@ class CharacterWidgetState extends State<CharacterWidget> {
                           builder: (context, value, child) {
                             return Container(
                                 margin: EdgeInsets.only(left: 10 * scale),
-                                child: HealthWheelController(
-                                    figureId: widget.characterId,
-                                    ownerId: widget.characterId,
-                                    child: Row(children: [
-                                      Image(
-                                        fit: BoxFit.contain,
-                                        height: scaledHeight * 0.2,
-                                        image: const AssetImage(
-                                            "assets/images/blood.png"),
-                                      ),
-                                      Text(
-                                        frosthavenStyle
-                                            ? '${character.characterState.health.value.toString()}/${character.characterState.maxHealth.value.toString()}'
-                                            : '${character.characterState.health.value.toString()} / ${character.characterState.maxHealth.value.toString()}',
+                                child: Row(children: [
+                                  Image(
+                                    fit: BoxFit.contain,
+                                    height: scaledHeight * 0.2,
+                                    image: const AssetImage(
+                                        "assets/images/blood.png"),
+                                  ),
+                                  HealthWheelController(
+                                      figureId: widget.characterId,
+                                      ownerId: widget.characterId,
+                                      child: Text(
+                                        '${character.characterState.health.value.toString()}${frosthavenStyle ? "/" : " / "}${character.characterState.maxHealth.value.toString()}',
                                         style: TextStyle(
                                             fontFamily: frosthavenStyle
                                                 ? 'GermaniaOne'
@@ -518,18 +516,17 @@ class CharacterWidgetState extends State<CharacterWidget> {
                                                 ? 16 * scale
                                                 : 16 * scale,
                                             shadows: [shadow]),
-                                      ),
-                                      //add conditions here
-                                      ValueListenableBuilder<List<Condition>>(
-                                          valueListenable: character
-                                              .characterState.conditions,
-                                          builder: (context, value, child) {
-                                            return Row(
-                                              children:
-                                                  createConditionList(scale),
-                                            );
-                                          }),
-                                    ])));
+                                      )),
+                                  //add conditions here
+                                  ValueListenableBuilder<List<Condition>>(
+                                      valueListenable:
+                                          character.characterState.conditions,
+                                      builder: (context, value, child) {
+                                        return Row(
+                                          children: createConditionList(scale),
+                                        );
+                                      }),
+                                ]));
                           })
                     ])
               ],
