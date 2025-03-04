@@ -70,7 +70,7 @@ class GameState extends ActionHandler {
 
   //state
   ValueListenable<String> get currentCampaign => _currentCampaign;
-  final _currentCampaign = ValueNotifier<String>("Jaws of the Lion");
+  final _currentCampaign = ValueNotifier<String>("Frosthaven");
   setCampaign(_StateModifier stateModifier, String value) {
     _currentCampaign.value = value;
   }
