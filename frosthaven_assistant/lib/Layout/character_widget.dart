@@ -291,7 +291,7 @@ class CharacterWidgetState extends State<CharacterWidget> {
     ]);
   }
 
-  SweepGradient buildGradiantBackground(List<Color> colors) {
+  SweepGradient buildGradientBackground(List<Color> colors) {
     int nrOfColorEntries = colors.length * 3 + 1;
 
     List<Color> endList = [];
@@ -400,14 +400,14 @@ class CharacterWidgetState extends State<CharacterWidget> {
                               ? BlendMode.multiply
                               : null,
                       gradient: (character.characterClass.name == "Shattersong")
-                          ? buildGradiantBackground([
+                          ? buildGradientBackground([
                               Colors.yellow,
                               Colors.purple,
                               Colors.teal,
                               Colors.white24
                             ])
                           : character.characterClass.name == "Rimehearth"
-                              ? buildGradiantBackground([
+                              ? buildGradientBackground([
                                   character.characterClass.colorSecondary,
                                   character.characterClass.color
                                 ])
