@@ -26,4 +26,7 @@ class FigureState {
   BuiltSet<Condition> get conditionsAddedPreviousTurn => BuiltSet.of(_conditionsAddedPreviousTurn);
   final Set<Condition> _conditionsAddedPreviousTurn = {};
   Set<Condition> getMutableConditionsAddedPreviousTurn(_StateModifier stateModifier) {return _conditionsAddedPreviousTurn;}
+  int get conditionsHealthChangedPreviousTurn => _conditionsHealthChangedPreviousTurn;
+  int _conditionsHealthChangedPreviousTurn = 0;
+  int getMutableConditionsHealthChangedPreviousTurn(_StateModifier stateModifier) {return _conditionsHealthChangedPreviousTurn;}
 }

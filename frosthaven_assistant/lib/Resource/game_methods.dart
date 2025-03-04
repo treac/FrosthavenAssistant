@@ -1414,10 +1414,12 @@ class GameMethods {
       _StateModifier _, FigureState figure, bool clearLastTurnToo) {
     if (!clearLastTurnToo) {
       figure._conditionsAddedPreviousTurn.clear();
+      figure._conditionsHealthChangedPreviousTurn = 0;
       figure._conditionsAddedPreviousTurn
           .addAll(figure.conditionsAddedThisTurn.toSet());
     } else {
       figure._conditionsAddedPreviousTurn.clear();
+      figure._conditionsHealthChangedPreviousTurn = 0;
     }
     if (!clearLastTurnToo) {
       if (figure.conditionsAddedThisTurn.contains(Condition.chill)) {
@@ -1455,38 +1457,56 @@ class GameMethods {
   }
 
   static bool canExpire(Condition condition) {
-    if (
-        //don't remove bane because user need to remember to remove 10hp as well
+    if (condition == Condition.bane ||
         condition == Condition.strengthen ||
-            condition == Condition.stun ||
-            condition == Condition.immobilize ||
-            condition == Condition.muddle ||
-            condition == Condition.invisible ||
-            condition == Condition.disarm ||
-            condition == Condition.chill ||
-            condition == Condition.impair) {
+        condition == Condition.stun ||
+        condition == Condition.immobilize ||
+        condition == Condition.muddle ||
+        condition == Condition.invisible ||
+        condition == Condition.disarm ||
+        condition == Condition.chill ||
+        condition == Condition.impair) {
       return true;
     }
     return false;
   }
 
-  static void removeExpiringConditions(_StateModifier _, FigureState figure) {
-    if (getIt<Settings>().expireConditions.value == true) {
-      bool chillRemoved = false;
-      for (int i = figure.conditions.value.length - 1; i >= 0; i--) {
-        Condition item = figure.conditions.value[i];
-        if (canExpire(item)) {
-          if (item != Condition.chill || chillRemoved == false) {
-            if (!figure.conditionsAddedThisTurn.contains(item)) {
-              figure.conditions.value.removeAt(i);
-              figure._conditionsAddedPreviousTurn.add(item);
-            }
-            if (item == Condition.chill) {
-              figure._chill.value--;
-              chillRemoved = true;
-            }
-          }
-        }
+  static void removeExpiringConditions(
+      _StateModifier stateModifier, FigureState figure) {
+    if (!getIt<Settings>().expireConditions.value) return;
+
+    if (figure.conditions.value.remove(Condition.bane)) {
+      int healthReduction = 10;
+      if (figure.conditions.value.remove(Condition.brittle)) {
+        healthReduction *= 2;
+        figure._conditionsAddedPreviousTurn.add(Condition.brittle);
+      }
+      if (figure.conditions.value.remove(Condition.ward)) {
+        healthReduction ~/= 2;
+        figure._conditionsAddedPreviousTurn.add(Condition.ward);
+      }
+      figure._conditionsAddedPreviousTurn.add(Condition.bane);
+      healthReduction = min(healthReduction, figure._health.value);
+      figure._health.value -= healthReduction;
+      figure._conditionsHealthChangedPreviousTurn -= healthReduction;
+      if (figure._health.value <= 0) {
+        handleDeath(stateModifier);
+      }
+    }
+
+    bool chillRemoved = false;
+    for (var item in figure.conditions.value) {
+      if (!canExpire(item) || (item == Condition.chill && chillRemoved)) {
+        continue;
+      }
+
+      if (!figure.conditionsAddedThisTurn.contains(item)) {
+        figure.conditions.value.remove(item);
+        figure._conditionsAddedPreviousTurn.add(item);
+      }
+      if (item == Condition.chill) {
+        figure._chill.value--;
+        chillRemoved = true;
       }
     }
   }
@@ -1516,6 +1536,8 @@ class GameMethods {
         figure._chill.value++;
       }
     }
+    figure._health.value += -(figure._conditionsHealthChangedPreviousTurn);
+    figure._conditionsHealthChangedPreviousTurn = 0;
   }
 
   static void reapplyConditionsFromListItem(
@@ -1532,23 +1554,27 @@ class GameMethods {
     }
   }
 
+  /// Sets the turn as done for the specified index and updates the turn state for other items.
   static void setTurnDone(_StateModifier s, int index) {
+    // Mark all items before the specified index as done and remove expiring conditions.
     for (int i = 0; i < index; i++) {
       if (_gameState.currentList[i].turnState != TurnsState.done) {
         _gameState.currentList[i]._turnState = TurnsState.done;
         removeExpiringConditionsFromListItem(s, _gameState.currentList[i]);
       }
     }
-    //if on index is NOT current then set to current else set to done
+
+    // If the item at the specified index is currently active, mark it as done and remove expiring conditions.
+    // Otherwise, keep it as the current item.
     int newIndex = index + 1;
     if (_gameState.currentList[index].turnState == TurnsState.current) {
       _gameState.currentList[index]._turnState = TurnsState.done;
       removeExpiringConditionsFromListItem(s, _gameState.currentList[index]);
-      //remove expiring conditions
     } else {
       newIndex = index;
     }
 
+    // Find the next item to set as the current turn.
     for (; newIndex < _gameState.currentList.length; newIndex++) {
       ListItemData data = _gameState.currentList[newIndex];
       if (data is Monster) {
@@ -1569,6 +1595,8 @@ class GameMethods {
         }
       }
     }
+
+    // Mark all items after the new current item as not done and reapply conditions if they were done.
     for (int i = newIndex + 1; i < _gameState.currentList.length; i++) {
       if (_gameState.currentList[i].turnState == TurnsState.done) {
         reapplyConditionsFromListItem(s, _gameState.currentList[i]);

@@ -33,7 +33,8 @@ class CharacterState extends FigureState {
         '"summonList": ${_summonList.toString()}, '
         '"conditions": ${conditions.value.toString()}, '
         '"conditionsAddedThisTurn": ${conditionsAddedThisTurn.toList().toString()}, '
-        '"conditionsAddedPreviousTurn": ${conditionsAddedPreviousTurn.toList().toString()} '
+        '"conditionsAddedPreviousTurn": ${conditionsAddedPreviousTurn.toList().toString()}, '
+        '"conditionsHealthChangedPreviousTurn": $_conditionsHealthChangedPreviousTurn '
         '}';
   }
 
@@ -46,27 +47,25 @@ class CharacterState extends FigureState {
     _maxHealth.value = json["maxHealth"];
     _display.value = json['display'];
 
-    List<dynamic> summons = json["summonList"];
-    for (var item in summons) {
+    for (var item in json["summonList"]) {
       _summonList.add(MonsterInstance.fromJson(item));
     }
 
-    List<dynamic> condis = json["conditions"];
-    for (int item in condis) {
+    for (int item in json["conditions"]) {
       conditions.value.add(Condition.values[item]);
     }
 
     if (json.containsKey("conditionsAddedThisTurn")) {
-      List<dynamic> condis2 = json["conditionsAddedThisTurn"];
-      for (int item in condis2) {
+      for (int item in json["conditionsAddedThisTurn"]) {
         _conditionsAddedThisTurn.add(Condition.values[item]);
       }
     }
     if (json.containsKey("conditionsAddedPreviousTurn")) {
-      List<dynamic> condis3 = json["conditionsAddedPreviousTurn"];
-      for (int item in condis3) {
+      for (int item in json["conditionsAddedPreviousTurn"]) {
         _conditionsAddedPreviousTurn.add(Condition.values[item]);
       }
     }
+    _conditionsHealthChangedPreviousTurn =
+        json["conditionsHealthChangedPreviousTurn"];
   }
 }
