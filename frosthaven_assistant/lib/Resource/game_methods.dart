@@ -1255,6 +1255,78 @@ class GameMethods {
     return "";
   }
 
+  // Handles the death of monsters and characters in the game
+  static void handleDeath(_StateModifier stateAccess) {
+    // Iterate through the current list of game items
+    for (var item in getIt<GameState>().currentList) {
+      // Check if the item is a Monster
+      if (item is Monster) {
+        var newList = List<MonsterInstance>.from(item.monsterInstances);
+        for (var instance in item.monsterInstances) {
+          // Check if the monster's health is 0
+          if (instance.health.value == 0) {
+            newList.remove(instance);
+            // Clear and update monster instances list
+            item.getMutableMonsterInstancesList(stateAccess)
+              ..clear()
+              ..addAll(newList);
+
+            // Delay execution to handle monster death animation
+            Future.delayed(const Duration(milliseconds: 600),
+                () => getIt<GameState>().killMonsterStandee.value++);
+
+            // Check if all monster instances are dead
+            if (item.monsterInstances.isEmpty) {
+              if (getIt<GameState>().roundState.value ==
+                  RoundState.chooseInitiative) {
+                GameMethods.sortCharactersFirst(stateAccess);
+              }
+              // Update list based on round state
+              if (getIt<GameState>().roundState.value == RoundState.playTurns) {
+                Future.delayed(const Duration(milliseconds: 600),
+                    () => getIt<GameState>().updateList.value++);
+              } else {
+                getIt<GameState>().updateList.value++;
+              }
+            }
+            break;
+          }
+        }
+      }
+      // Check if the item is a Character
+      else if (item is Character) {
+        // Handle character death
+        if (item.characterState.health.value <= 0) {
+          getIt<GameState>().updateList.value++;
+        }
+
+        // Handle summon death
+        for (var instance in item.characterState.summonList) {
+          // Check if the summon health is 0
+          if (instance.health.value == 0) {
+            item.characterState
+                .getMutableSummonList(stateAccess)
+                .remove(instance);
+
+            // Delay execution to handle summon death animation
+            Future.delayed(const Duration(milliseconds: 600),
+                () => getIt<GameState>().killMonsterStandee.value++);
+
+            // Check if all summon instances are dead
+            if (item.characterState.summonList.isEmpty) {
+              // Update list based on round state
+              Future.delayed(const Duration(milliseconds: 600),
+                  () => getIt<GameState>().updateList.value++);
+            } else {
+              getIt<GameState>().updateList.value++;
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+
   static bool isObjectiveOrEscort(CharacterClass character) {
     return character.id == "Escort" || character.id == "Objective";
   }

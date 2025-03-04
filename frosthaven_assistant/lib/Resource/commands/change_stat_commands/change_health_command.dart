@@ -24,7 +24,7 @@ class ChangeHealthCommand extends ChangeStatCommand {
     }
 
     if (figure.health.value <= 0) {
-      handleDeath();
+      GameMethods.handleDeath(stateAccess);
     }
   }
 
