@@ -2,11 +2,78 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Layout/draw_button.dart';
+import 'package:frosthaven_assistant/Layout/menus/main_menu.dart';
 import 'package:frosthaven_assistant/Resource/settings.dart';
+import 'package:frosthaven_assistant/Resource/state/game_state.dart';
+import 'package:frosthaven_assistant/services/network/network.dart';
 
 import '../Resource/enums.dart';
 import '../services/service_locator.dart';
 import 'element_button.dart';
+
+ValueListenableBuilder<int> _buildUndo() {
+  final gameState = getIt<GameState>();
+  final settings = getIt<Settings>();
+  return ValueListenableBuilder<int>(
+    valueListenable: gameState.commandIndex,
+    builder: (context, command, _) {
+      String undoText = "Undo:";
+      if (settings.client.value != ClientState.connected &&
+          gameState.commandIndex.value >= 0 &&
+          gameState.commandDescriptions.length > gameState.commandIndex.value) {
+        undoText +=
+            ": ${gameState.commandDescriptions[gameState.commandIndex.value]}";
+      }
+      return TextButton(
+        onPressed: () {
+          if (undoEnabled()) {
+            gameState.undo();
+          }
+        },
+        child: Text(
+          undoText, // Ensure this is defined
+          style: TextStyle(
+            fontSize: 14 * settings.userScalingBars.value,
+            color: undoEnabled() ? Colors.black : Colors.transparent,
+            decoration: TextDecoration.none,
+          ),
+        ),
+      );
+    },
+  );
+}
+
+ValueListenableBuilder<int> _buildRedo() {
+  final gameState = getIt<GameState>();
+  final settings = getIt<Settings>();
+  return ValueListenableBuilder<int>(
+    valueListenable: gameState.commandIndex,
+    builder: (context, command, _) {
+      String redoText = "Redo:";
+      if (settings.client.value != ClientState.connected &&
+          gameState.commandIndex.value <
+              gameState.commandDescriptions.length - 1) {
+        redoText +=
+            ": ${gameState.commandDescriptions[gameState.commandIndex.value + 1]}";
+      }
+      return TextButton(
+        onPressed: () {
+          if (redoEnabled()) {
+            gameState.redo();
+          }
+        },
+        child: Text(
+          redoText, // Ensure this is defined
+          style: TextStyle(
+            fontSize: 14 * settings.userScalingBars.value,
+            color: redoEnabled() ? Colors.black : Colors.transparent,
+            decoration: TextDecoration.none,
+          ),
+        ),
+      );
+    },
+  );
+}
 
 PreferredSize createTopBar() {
   final settings = getIt<Settings>();
@@ -24,8 +91,12 @@ PreferredSize createTopBar() {
                 IconThemeData(color: isDark ? Colors.white : Colors.black),
             leading: _buildMenuButton(context, settings, shadow),
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _createElementButtonsList(),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: _buildUndo()),
+                Center(child: _createElementButtonsList()),
+                Expanded(child: _buildRedo()),
+              ],
             ),
             toolbarHeight: 40 * settings.userScalingBars.value,
             flexibleSpace: _buildBackground(settings, isDark),
@@ -37,58 +108,51 @@ PreferredSize createTopBar() {
   );
 }
 
-List<Widget> _createElementButtonsList() {
+Row _createElementButtonsList() {
   final elementData = [
     (
       color: const Color.fromARGB(255, 226, 66, 30),
       element: Elements.fire,
-      icon: 'assets/images/psd/element-fire.png'
     ),
     (
       color: const Color.fromARGB(255, 85, 200, 239),
       element: Elements.ice,
-      icon: 'assets/images/psd/element-ice.png'
     ),
     (
       color: const Color.fromARGB(255, 152, 176, 181),
       element: Elements.air,
-      icon: 'assets/images/psd/element-air.png'
     ),
     (
       color: const Color.fromARGB(255, 124, 168, 42),
       element: Elements.earth,
-      icon: 'assets/images/psd/element-earth.png'
     ),
     (
       color: const Color.fromARGB(255, 236, 166, 15),
       element: Elements.light,
-      icon: 'assets/images/psd/element-light.png'
     ),
     (
       color: const Color.fromARGB(255, 31, 50, 131),
       element: Elements.dark,
-      icon: 'assets/images/psd/element-dark.png'
     ),
   ];
-
-  return elementData
-      .map((data) => ElementButton(
-            key: UniqueKey(),
-            color: data.color,
-            element: data.element,
-            icon: data.icon,
-          ))
-      .toList();
+  return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: elementData
+          .map((data) => ElementButton(
+                key: UniqueKey(),
+                color: data.color,
+                element: data.element,
+                icon: 'assets/images/psd/element-${data.element.name}.png',
+              ))
+          .toList());
 }
 
 Shadow _createShadow(Settings settings) {
+  final scale = settings.userScalingBars.value;
   return Shadow(
-    offset: Offset(
-      settings.userScalingBars.value,
-      settings.userScalingBars.value,
-    ),
+    offset: Offset(scale, scale),
     color: Colors.black87,
-    blurRadius: settings.userScalingBars.value,
+    blurRadius: scale,
   );
 }
 
