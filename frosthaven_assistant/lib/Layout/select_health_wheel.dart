@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Resource/commands/change_stat_commands/change_health_command.dart';
 import 'package:frosthaven_assistant/Resource/state/game_state.dart';
@@ -67,7 +68,7 @@ class SelectHealthWheelState extends State<SelectHealthWheel> {
     deltaMod = max(deltaMod, 2.5);
 
     deltaMod *= delta;
-    if (Platform.isIOS || Platform.isMacOS) {
+    if (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) {
       deltaMod /= 2;
     }
 

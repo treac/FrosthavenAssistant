@@ -31,7 +31,7 @@ void main() {
   const minScreenWidth = 400.0;
   const minScreenHeight = 600.0;
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (!kIsWeb && Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowTitle(title);
     if (!Platform.isMacOS) {
       windowManager.setMinimumSize(const Size(minScreenWidth, minScreenHeight));
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
     debugInvertOversizedImages = false;
 
     //call after keyboard
-    if (Platform.isIOS || Platform.isAndroid) {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
       WakelockPlus.enable();
       //should force app to be in foreground and disable screen lock
     }

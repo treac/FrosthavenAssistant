@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frosthaven_assistant/Layout/menus/save_menu.dart';
 import 'package:frosthaven_assistant/Resource/commands/clear_unlocked_classes_command.dart';
@@ -273,7 +274,7 @@ class SettingsMenuState extends State<SettingsMenu> {
                                       getIt<GameState>().updateAllUI();
                                     });
                                   }),
-                              if (!Platform.isIOS)
+                              if (!kIsWeb && !Platform.isIOS)
                                 CheckboxListTile(
                                     title: const Text("Fullscreen"),
                                     value: settings.fullScreen.value,

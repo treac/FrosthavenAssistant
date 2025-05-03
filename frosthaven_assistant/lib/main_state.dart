@@ -88,7 +88,7 @@ class MainState extends State<MyHomePage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       KeyboardVisibilityController().onChange.listen((bool visible) {
         if (kDebugMode) {
           print("keyboard visible $visible");

@@ -1,0 +1,14 @@
+1 - Wunde am Ende der Runde abziehen (bei Undo reverten und ggf. gestorbenes Monster wieder aufstellen mit alten Leben und Conditions)
+1 - Regeneration beim erhalten von Schaden automatisch entfernen
+1 - Loot Deck "Vorrat" hinzufügen"
+2 - Begleiter vergößern (wie Character) und in Runden einpflegen.
+2 - Begleiter Werte und Effekte einfügen (vorhanden in JSONs)
+
+5 - Settings überarbeiten (nicht verwendet herausschmeißen)
+- 3 statt 2 Spalten der Monster ausprobieren
+- Character Box Layout überarbeiten ( Plus viel zu groß, Reihen für Contitions, statt nur eine, positive und auch negative Effektreihen)
+5 - Bilder als Charakter einfügen
+
+5 - Feature Requests von Orginalseite
+5 - Bugfixes von der Orginalseite
+5 - Deutsche Übersetzung mit der Möglichkeit mehrere Sprachen zu verwenden.
