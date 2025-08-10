@@ -1,4 +1,4 @@
-import 'package:frosthaven_assistant/Model/MonsterAbility.dart';
+import 'package:frosthaven_assistant/Model/monster_ability.dart';
 
 import '../../services/service_locator.dart';
 import '../state/game_state.dart';

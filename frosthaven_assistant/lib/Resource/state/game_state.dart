@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Layout/main_list.dart';
 import '../../Layout/menus/auto_add_standee_menu.dart';
-import '../../Model/MonsterAbility.dart';
+import '../../Model/monster_ability.dart';
 import '../../Model/character_class.dart';
 import '../../Model/monster.dart';
 import '../../Model/room.dart';

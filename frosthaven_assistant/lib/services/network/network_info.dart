@@ -89,4 +89,8 @@ class NetworkInformation {
     developer.log('Wifi IPv4: ${wifiIPv4.value}\n'
         'Outgoing IPv4: ${outgoingIPv4.value}\n');
   }
+
+  void dispose() {
+    _connectivitySubscription.cancel();
+  }
 }

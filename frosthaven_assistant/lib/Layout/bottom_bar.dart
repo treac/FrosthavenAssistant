@@ -92,7 +92,7 @@ Widget createLevelWidget(BuildContext context) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(opacity),
+                                    color: Colors.black.withValues(alpha: opacity),
                                     spreadRadius: spreadRadius,
                                     blurRadius: blurRadius *
                                         settings.userScalingBars.value,
@@ -118,7 +118,7 @@ Widget createLevelWidget(BuildContext context) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(opacity),
+                                    color: Colors.black.withValues(alpha: opacity),
                                     spreadRadius: spreadRadius,
                                     blurRadius: blurRadius *
                                         settings.userScalingBars.value,
@@ -144,7 +144,7 @@ Widget createLevelWidget(BuildContext context) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(opacity),
+                                    color: Colors.black.withValues(alpha: opacity),
                                     spreadRadius: spreadRadius,
                                     blurRadius: blurRadius *
                                         settings.userScalingBars.value,
@@ -170,7 +170,7 @@ Widget createLevelWidget(BuildContext context) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(opacity),
+                                    color: Colors.black.withValues(alpha: opacity),
                                     spreadRadius: spreadRadius,
                                     blurRadius: blurRadius *
                                         settings.userScalingBars.value,
@@ -196,7 +196,7 @@ Widget createLevelWidget(BuildContext context) {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(opacity),
+                                    color: Colors.black.withValues(alpha: opacity),
                                     spreadRadius: spreadRadius,
                                     blurRadius: blurRadius *
                                         settings.userScalingBars.value,

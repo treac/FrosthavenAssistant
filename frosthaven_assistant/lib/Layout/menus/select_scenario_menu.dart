@@ -269,15 +269,15 @@ class SelectScenarioMenuState extends State<SelectScenarioMenu> {
                   ]),
                   Container(
                     margin: const EdgeInsets.only(left: 10, right: 10),
-                    child: RawKeyboardListener(
+                    child: KeyboardListener(
                         //needed to trigger onEditingComplete on enter
                         //TODO: add this to the other menus
                         focusNode: FocusNode(),
-                        onKey: (event) {
+                        onKeyEvent: (event) {
                           if (kDebugMode) {
-                            print(event.data.logicalKey.keyId);
+                            print(event.logicalKey.keyId);
                           }
-                          if (event.runtimeType == RawKeyDownEvent &&
+                          if (event is KeyDownEvent &&
                               (event.logicalKey.keyId == 13)) {
                             if (_foundScenarios.isNotEmpty) {
                               //_gameState.action(

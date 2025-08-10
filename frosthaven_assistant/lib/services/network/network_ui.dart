@@ -28,7 +28,7 @@ class NetworkUIState extends State<NetworkUI> {
         builder: (context, value, child) {
           Future.delayed(const Duration(milliseconds: 200), () {
             String message = getIt<Network>().networkMessage.value;
-            if (message != "") {
+            if (message != "" && context.mounted) {
               if (message.toLowerCase().contains("error") ||
                   message.toLowerCase().contains("disconnected") ||
                   message.toLowerCase().contains("lost")) {

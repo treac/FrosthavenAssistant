@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:room_data_converter/ReCase.dart';
 import 'package:room_data_converter/model.dart';
+import 'package:room_data_converter/re_case.dart';
 
 Future<int> calculate() async {
   bool ttsData = false;
@@ -14,7 +14,7 @@ Future<int> calculate() async {
     futureContent.then((c) async {
       String scenarioName = scenarioNumber.toString();
       final data = await json.decode(c.toString());
-     // if (data.containsKey('id')) {
+      // if (data.containsKey('id')) {
       //  scenarioName = data['id'];
       //}
       //print(scenarioName);
@@ -23,8 +23,8 @@ Future<int> calculate() async {
         final rooms = data['rooms'] as List;
         for (var room in rooms) {
           String roomName = "unknown";
-          if(data.containsKey("name") && data.containsKey("index")) {
-            roomName = data['index'] + " " + data['name'];
+          if (data.containsKey("name") && data.containsKey("index")) {
+            roomName = "${data['index']} ${data['name']}";
           }
           if (room.containsKey('ref')) {
             roomName = room['ref'];
@@ -32,7 +32,7 @@ Future<int> calculate() async {
           if (room.containsKey('mapTiles')) {
             var mapTiles = room['mapTiles'];
             var tile = mapTiles[0];
-            if(tile != null) {
+            if (tile != null) {
               roomName = tile['tile'];
             }
           }
@@ -57,7 +57,7 @@ Future<int> calculate() async {
               List<int> monsterAmountElite = [0, 0, 0];
               for (var data in room[monsterKey]) {
                 if (data['name'] == item) {
-                  if(!ttsData) {
+                  if (!ttsData) {
                     if (data.containsKey('type')) {
                       //means it is always there, other wise it would say player2-4
                       if (data['type'] == "elite") {
@@ -94,27 +94,27 @@ Future<int> calculate() async {
                   } else {
                     var tiles = data['tiles'];
                     for (var item in tiles) {
-                      if(item.containsKey("numCharacters")) {
+                      if (item.containsKey("numCharacters")) {
                         var tile = item['numCharacters'];
-                        if(tile.containsKey("2")) {
+                        if (tile.containsKey("2")) {
                           int val = tile["2"];
-                          if(val == 1) {
+                          if (val == 1) {
                             monsterAmountNormal[0]++;
                           } else if (val == 2) {
                             monsterAmountElite[0]++;
                           }
                         }
-                        if(tile.containsKey("3")) {
+                        if (tile.containsKey("3")) {
                           int val = tile["3"];
-                          if(val == 1) {
+                          if (val == 1) {
                             monsterAmountNormal[1]++;
                           } else {
                             monsterAmountElite[1]++;
                           }
                         }
-                        if(tile.containsKey("4")) {
+                        if (tile.containsKey("4")) {
                           int val = tile["4"];
-                          if(val == 1) {
+                          if (val == 1) {
                             monsterAmountNormal[2]++;
                           } else {
                             monsterAmountElite[2]++;

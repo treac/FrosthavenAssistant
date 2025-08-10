@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frosthaven_assistant/Model/MonsterAbility.dart';
+import 'package:frosthaven_assistant/Model/monster_ability.dart';
 import 'package:frosthaven_assistant/Resource/commands/remove_card_command.dart';
 import 'package:frosthaven_assistant/Resource/commands/reorder_ability_list_command.dart';
 import 'package:frosthaven_assistant/Resource/commands/shuffle_drawn_ability_card_command.dart';
@@ -50,7 +50,7 @@ class RemoveCardMenuState extends State<RemoveCardMenu> {
         decoration: BoxDecoration(
           image: DecorationImage(
             colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                Colors.black.withValues(alpha: 0.8), BlendMode.dstATop),
             image: AssetImage(getIt<Settings>().darkMode.value
                 ? 'assets/images/bg/dark_bg.png'
                 : 'assets/images/bg/white_bg.png'),

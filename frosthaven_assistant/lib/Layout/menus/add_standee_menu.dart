@@ -44,20 +44,19 @@ class AddStandeeMenuState extends State<AddStandeeMenu> {
     }
 
     if (getIt<GameState>().currentCampaign.value == "Buttons and Bugs") {
-      if(nr == 1) {
+      if (nr == 1) {
         color = Colors.green;
       }
-      if(nr == 2) {
+      if (nr == 2) {
         color = Colors.blue;
       }
-      if(nr == 3) {
+      if (nr == 3) {
         color = Colors.purple;
       }
-      if(nr == 4) {
+      if (nr == 4) {
         color = Colors.red;
       }
     }
-
 
     bool isOut = false;
     for (var item in widget.monster.monsterInstances) {
@@ -120,7 +119,7 @@ class AddStandeeMenuState extends State<AddStandeeMenu> {
         height: height * scale,
         decoration: BoxDecoration(
           image: DecorationImage(
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+            colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.8), BlendMode.dstATop),
             image: AssetImage(getIt<Settings>().darkMode.value
                 ? 'assets/images/bg/dark_bg.png'
                 : 'assets/images/bg/white_bg.png'),

@@ -15,29 +15,11 @@ abstract class GameServer {
 
   final int serverVersion = 1110;
 
-  ServerSocket? _serverSocket;
-  ServerSocket? get serverSocket {
-    return _serverSocket;
-  }
-  set serverSocket(ServerSocket? value){
-    _serverSocket = value;
-  }
+  ServerSocket? serverSocket;
 
-  bool _serverEnabled = false;
-  bool get serverEnabled {
-    return _serverEnabled;
-  }
-  set serverEnabled(bool value){
-    _serverEnabled = value;
-  }
+  bool serverEnabled = false;
 
-  String _leftOverMessage = "";
-  String get leftOverMessage{
-    return _leftOverMessage;
-  }
-  set leftOverMessage(String value){
-    _leftOverMessage = value;
-  }
+  String leftOverMessage = "";
 
   void resetState();
   void undoState();
@@ -156,7 +138,7 @@ abstract class GameServer {
           // gracefully when the device is locked.
           if (error is SocketException &&
               (error.osError?.errorCode == 103 ||
-                  !leftOverMessage.isEmpty)) {
+                  leftOverMessage.isNotEmpty)) {
             stopServer(error.toString());
           }
         },
@@ -244,10 +226,10 @@ abstract class GameServer {
     } catch (exception) {
       log("Encountered error accessing client");
       log(exception.toString());
-      // There might be a chance that is is for a different 
-      // reason, but this is the most common reason I've 
+      // There might be a chance that is is for a different
+      // reason, but this is the most common reason I've
       // seen so far
-      return "Closed socket"; 
+      return "Closed socket";
     }
   }
 }
