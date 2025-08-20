@@ -1,0 +1,40 @@
+name: Daily rebase main and develop onto upstream/main
+
+on:
+  schedule:
+    - cron: "0 3 * * *"  # daily 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  rebase-main-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Add upstream remote and fetch 'upstream/main' only
+        run: |
+          git remote set-url origin https://github.com/${{ github.repository }}.git
+          git fetch origin main develop --prune --tags
+          git remote add upstream https://github.com/Tarmslitaren/FrosthavenAssistant.git
+          git fetch upstream main --prune --tags
+
+      - name: Rebase 'main' and 'develop' onto 'upstream/main'
+        run: |
+          for branch in main develop; do
+            echo "=== Rebase '$branch' onto 'upstream/main' ==="
+            git checkout $branch
+            git pull origin $branch --ff-only
+            git rebase upstream/main || {
+              echo "❌ Rebase failed on branch '$branch'"
+              exit 1
+            }
+            git push origin $branch --force-with-lease
+          done
